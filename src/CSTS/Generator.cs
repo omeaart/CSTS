@@ -52,7 +52,7 @@ namespace CSTS
         flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly;
       }
 
-      var properties = tst.ClrType.GetProperties(flags).Cast<MemberInfo>().Union(tst.ClrType.GetFields(flags));
+      var properties = tst.ClrType.GetProperties(flags).Where(p => p.CanWrite).Cast<MemberInfo>().Union(tst.ClrType.GetFields(flags));
 
       foreach (var property in properties)
       {

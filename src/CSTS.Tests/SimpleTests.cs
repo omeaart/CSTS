@@ -102,5 +102,41 @@ namespace TypeScriptDefinitionGeneratorTests
       code.Should().Contain("NonNullableInt : number;");
       code.Should().Contain("NullableInt? : number;");
     }
+
+    class NoSetter
+    {
+      public int IHaveASetter { get; set; }
+      public int IHaveNoSetter { get; }
+    }
+
+    [TestMethod]
+    public void Properties_without_setter_should_be_ignored_class()
+    {
+      var generator = new Generator(typeof(NoSetter));
+
+      var modules = generator.GenerateMapping();
+
+      var classGenerator = new ClassDefinitionsGenerator(modules, new GeneratorOptions());
+
+      var code = classGenerator.Generate();
+
+      code.Should().Contain("IHaveASetter : number;");
+      code.Should().NotContain("IHaveNoSetter : number;");
+    }
+
+    [TestMethod]
+    public void Properties_without_setter_should_be_ignored_interface()
+    {
+      var generator = new Generator(typeof(NoSetter));
+
+      var modules = generator.GenerateMapping();
+
+      var classGenerator = new InterfaceDefinitionsGenerator(modules, new GeneratorOptions());
+
+      var code = classGenerator.Generate();
+
+      code.Should().Contain("IHaveASetter : number;");
+      code.Should().NotContain("IHaveNoSetter : number;");
+    }
   }
 }
